@@ -4,9 +4,9 @@ PREV_TAG=$(git tag --sort=-creatordate | sed -n 2p)
 HASH=$(git rev-parse HEAD | cut -c1-10)
 BUILD_NAME=$TAG-$HASH
 
-echo $TAG >> $GITHUB_ENV
-echo $PREV_TAG >> $GITHUB_ENV
-echo $HASH >> $GITHUB_ENV
-echo $BUILD_NAME >> $GITHUB_ENV
+echo "TAG=${TAG}" >> $GITHUB_ENV
+echo "PREV_TAG=${PREV_TAG}" >> $GITHUB_ENV
+echo "HASH=${HASH}" >> $GITHUB_ENV
+echo "BUILD_NAME=${BUILD_NAME}" >> $GITHUB_ENV
 
 docker build . -t $BUILD_NAME
