@@ -2,10 +2,8 @@ name: release
 
 on:
   push:
-    branches:
-      - master
-    # tags:
-    #   - "*"
+    tags:
+      - "*"
 
 jobs:
   release:
