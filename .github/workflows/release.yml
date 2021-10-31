@@ -22,6 +22,11 @@ jobs:
       - name: run tests
         run: npm test -- --watchAll=false
 
+      - name: build image
+        run: |
+          chmod +x ./scripts/build_image.sh
+          sh ./scripts/build_image.sh
+
       - name: create ticket
         run: |
           chmod +x ./scripts/create_ticket.sh
