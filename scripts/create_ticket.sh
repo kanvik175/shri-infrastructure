@@ -2,6 +2,8 @@
 
 QUEUE_NAME=TMP
 
+git fetch
+
 TAG=$(git tag | tail -1)
 PREV_TAG=$(git tag | sort -r | sed -n 2p)
 HASH=$(git rev-parse HEAD | cut -c1-10)
