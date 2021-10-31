@@ -19,5 +19,11 @@ jobs:
       - name: install dependencies
         run: npm i
 
-      - name: Run tests
+      - name: run tests
         run: npm test -- --watchAll=false
+
+      - name: create ticket
+        run: sh ./scripts/create_ticket.sh
+        env:
+          ORG_ID: ${{ secrets.ORG_ID }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
