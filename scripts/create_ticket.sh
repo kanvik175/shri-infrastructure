@@ -8,7 +8,9 @@ HASH=$(git rev-parse HEAD | cut -c1-10)
 
 BUILD_NAME=$TAG-$HASH
 SUMMARY="Релиз ${BUILD_NAME}"
-CHANGELOG=$(git log $PREV_TAG..$TAG --pretty=format:"%h %s %an\n" | tr -s "\n" " ")
+CHANGELOG=$(git log --pretty=format:"%h %s %an\n" $PREV_TAG..$TAG | tr -s "\n" " ")
+echo "prev tag ${PREV_TAG}"
+echo "tag ${TAG}"
 
 DESCRIPTION="Версия релиза: ${TAG}\nВерсия пакета с релизом: ${BUILD_NAME}\n\n${CHANGELOG}"
 
