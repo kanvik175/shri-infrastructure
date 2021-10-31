@@ -5,7 +5,7 @@ echo $GITHUB_ENV
 QUEUE_NAME=TMP
 
 SUMMARY="Релиз ${BUILD_NAME}"
-CHANGELOG=$(git log --pretty=format:"%h %s -- %an\n" $PREV_TAG..$TAG | tr -s "\n" " ")
+CHANGELOG=$(git log --pretty=format:"%h "%s" %an %ad\n" --date=short $PREV_TAG..$TAG | tr -s "\n" " ")
 
 DESCRIPTION="Версия релиза: ${TAG}\nВерсия пакета с релизом: ${BUILD_NAME}\n\n${CHANGELOG}"
 
