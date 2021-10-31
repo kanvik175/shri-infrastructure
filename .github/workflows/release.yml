@@ -23,6 +23,7 @@ jobs:
         run: npm test -- --watchAll=false
 
       - name: create ticket
+        run: chmod +x .scripts/create_ticket.sh
         run: sh ./scripts/create_ticket.sh
         env:
           ORG_ID: ${{ secrets.ORG_ID }}
