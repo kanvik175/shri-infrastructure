@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo $GITHUB_ENV
+
 QUEUE_NAME=TMP
 
 SUMMARY="Релиз ${BUILD_NAME}"
