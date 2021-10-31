@@ -22,7 +22,6 @@ jobs:
 
       - name: create ticket
         run: |
-          pwd
           chmod +x ./scripts/create_ticket.sh
           sh ./scripts/create_ticket.sh
         env:
