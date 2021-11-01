@@ -19,6 +19,15 @@ DESCRIPTION="Версия релиза: ${TAG}\nВерсия пакета с р�
 
 JSON='{"queue": "'"${QUEUE_NAME}"'", "summary": "'"${SUMMARY}"'", "description": "'"${DESCRIPTION}"'", "unique": "'"${BUILD_NAME}"'"}'
 
+
+CREATE_RESPONSE_CODE=$(curl -X  POST \
+-o /dev/null -s -w "%{http_code}\n" \
+-d "$JSON" \
+-H 'Content-Type: application-json' \
+-H 'X-Org-ID: '"$ORG_ID" \
+-H 'Authorization: OAuth '"$APP_TOKEN" \
+https://api.tracker.yandex.net/v2/issues/)
+
 echo "Установка пакета jq"
 sudo apt-get -y install jq
 
@@ -32,14 +41,6 @@ https://api.tracker.yandex.net/v2/issues/_search)
 TASK_ID=$(echo $SEARCH_RESULT | jq '.[].key' | sed 's/"//g')
 
 echo "TASK_ID=${TASK_ID}" >> $GITHUB_ENV
-
-CREATE_RESPONSE_CODE=$(curl -X  POST \
--o /dev/null -s -w "%{http_code}\n" \
--d "$JSON" \
--H 'Content-Type: application-json' \
--H 'X-Org-ID: '"$ORG_ID" \
--H 'Authorization: OAuth '"$APP_TOKEN" \
-https://api.tracker.yandex.net/v2/issues/)
 
 if [ $CREATE_RESPONSE_CODE = "201" ]
 then
