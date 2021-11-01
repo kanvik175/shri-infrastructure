@@ -14,9 +14,7 @@ jobs:
           fetch-depth: 0
 
       - name: make scripts executable
-        run: |
-          chmod +x ./scripts/make_scripts_exec.sh
-          sh ./scripts/make_scripts_exec.sh
+        run: find ./scripts -type f | xargs chmod +x
 
       - name: create ticket
         run: sh ./scripts/create_ticket.sh
