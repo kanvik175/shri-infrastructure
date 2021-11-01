@@ -32,7 +32,7 @@ https://api.tracker.yandex.net/v2/issues/)
 echo "Установка пакета jq"
 sudo apt-get -y install jq
 
-TASK_ID=$(echo $CREATE_RESPONSE | jq '.[].key' | sed 's/"//g')
+TASK_ID=$(echo $CREATE_RESPONSE | jq '.key' | sed 's/"//g')
 ERROR_CODE=$(echo $CREATE_RESPONSE | jq '.statusCode')
 
 echo "TASK_ID=${TASK_ID}" >> $GITHUB_ENV
@@ -41,7 +41,7 @@ echo $CREATE_RESPONSE
 echo $TASK_ID
 echo $ERROR_CODE
 
-if [ -e $TASK_ID ]
+if [ $TASK_ID == "" ]
 then
   echo "Тикет создан"
 else
