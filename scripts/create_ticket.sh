@@ -19,6 +19,9 @@ DESCRIPTION="Версия релиза: ${TAG}\nВерсия пакета с р�
 
 JSON='{"queue": "'"${QUEUE_NAME}"'", "summary": "'"${SUMMARY}"'", "description": "'"${DESCRIPTION}"'", "unique": "'"${BUILD_NAME}"'"}'
 
+echo "Установка пакета jq"
+sudo apt-get -y install jq
+
 SEARCH_RESULT=$(curl -s -X POST \
 -d '{"filter": { "unique": "'"${BUILD_NAME}"'" } }' \
 -H 'Content-Type: application-json' \
@@ -45,9 +48,6 @@ else
   if [ $CREATE_RESPONSE_CODE = "409" ]
   then
     echo "Тикет уже существует"
-
-    echo "Установка пакета jq"
-    sudo apt-get -y install jq
 
     TASK_URL=$(echo $SEARCH_RESULT | jq '.[].self' | sed 's/"//g')
     echo "URL существующего тикета: ${TASK_URL}"
