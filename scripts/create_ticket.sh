@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-ORG_ID=6461097
-APP_TOKEN=AQAAAAAWmi6LAAd5C9bXNaNYeE_vshAJkUkTl1c
+# ORG_ID=6461097
+# APP_TOKEN=AQAAAAAWmi6LAAd5C9bXNaNYeE_vshAJkUkTl1c
 
 QUEUE_NAME=TMP
 
@@ -10,10 +10,10 @@ PREV_TAG=$(git tag --sort=-creatordate | sed -n 2p)
 HASH=$(git rev-parse HEAD | cut -c1-10)
 BUILD_NAME=$TAG-$HASH
 
-# echo "TAG=${TAG}" >> $GITHUB_ENV
-# echo "PREV_TAG=${PREV_TAG}" >> $GITHUB_ENV
-# echo "HASH=${HASH}" >> $GITHUB_ENV
-# echo "BUILD_NAME=${BUILD_NAME}" >> $GITHUB_ENV
+echo "TAG=${TAG}" >> $GITHUB_ENV
+echo "PREV_TAG=${PREV_TAG}" >> $GITHUB_ENV
+echo "HASH=${HASH}" >> $GITHUB_ENV
+echo "BUILD_NAME=${BUILD_NAME}" >> $GITHUB_ENV
 
 SUMMARY="Релиз ${TAG}"
 CHANGELOG=$(git log --pretty=format:"%h "%s" %an %ad\n" --date=short $PREV_TAG..$TAG | tr -s "\n" " ")
@@ -29,20 +29,20 @@ CREATE_RESPONSE=$(curl -X  POST \
 -H 'Authorization: OAuth '"$APP_TOKEN" \
 https://api.tracker.yandex.net/v2/issues/)
 
-TASK_ID=$(echo $CREATE_RESPONSE | jq '.key' | sed 's/"//g')
-ERROR_CODE=$(echo $CREATE_RESPONSE | jq '.statusCode')
+TASK_ID=$(echo $CREATE_RESPONSE | tr '\n' ' ' | jq '.key' | sed 's/"//g')
+ERROR_CODE=$(echo $CREATE_RESPONSE | tr '\n' ' ' | jq '.statusCode')
 
-# echo "TASK_ID=${TASK_ID}" >> $GITHUB_ENV
+echo "TASK_ID=${TASK_ID}" >> $GITHUB_ENV
 
 echo $CREATE_RESPONSE
 echo $TASK_ID
 echo $ERROR_CODE
 
-if [[ $TASK_ID = "" ]]
+if [ "$TASK_ID" = "" ]
 then
   echo "Тикет создан"
 else
-  if [[ $ERROR_CODE = "409" ]]
+  if [ "$ERROR_CODE" = "409" ]
   then
     echo "Тикет уже существует"
 
@@ -53,9 +53,7 @@ else
     -H 'Authorization: OAuth '"$APP_TOKEN" \
     https://api.tracker.yandex.net/v2/issues/_search)
 
-    echo $SEARCH_RESULT
-
-    TASK_URL=$(echo $SEARCH_RESULT | jq '.[].self' | sed 's/"//g')
+    TASK_URL=$(echo $SEARCH_RESULT | tr '\n' ' ' | jq '.[].self' | sed 's/"//g')
     echo "URL существующего тикета: ${TASK_URL}"
 
     echo "Обновление существующего тикета"
@@ -68,7 +66,7 @@ else
     -H 'Authorization: OAuth '"$APP_TOKEN" \
     $TASK_URL)
 
-    if [[ $UPDATE_RESPONSE_CODE = "200" ]]
+    if [ "$UPDATE_RESPONSE_CODE" = "200" ]
     then
       echo "Тикет успешно обновлен"
     else
