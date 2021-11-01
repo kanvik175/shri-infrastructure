@@ -31,7 +31,7 @@ ERROR_CODE=$(echo $CREATE_RESPONSE | tr '\n' ' ' | jq '.statusCode')
 
 echo "TASK_ID=${TASK_ID}" >> $GITHUB_ENV
 
-if [ "$TASK_ID" = "" ]
+if [ -n "$TASK_ID" ]
 then
   echo "Тикет создан"
 else
