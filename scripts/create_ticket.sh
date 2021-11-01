@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# ORG_ID=6461097
-# APP_TOKEN=AQAAAAAWmi6LAAd5C9bXNaNYeE_vshAJkUkTl1c
-
 QUEUE_NAME=TMP
 
 TAG=$(git tag --sort=-creatordate | head -1)
@@ -33,10 +30,6 @@ TASK_ID=$(echo $CREATE_RESPONSE | tr '\n' ' ' | jq '.key' | sed 's/"//g')
 ERROR_CODE=$(echo $CREATE_RESPONSE | tr '\n' ' ' | jq '.statusCode')
 
 echo "TASK_ID=${TASK_ID}" >> $GITHUB_ENV
-
-echo $CREATE_RESPONSE
-echo $TASK_ID
-echo $ERROR_CODE
 
 if [ "$TASK_ID" = "" ]
 then
