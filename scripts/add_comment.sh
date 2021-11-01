@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 COMMENT="{ \"text\": \"$1\" }"
-TASK_ID=$2
-ORG_ID=$3
-APP_TOKEN=$4
+# TASK_ID=$2
+# ORG_ID=$3
+# APP_TOKEN=$4
 
 URL="https://api.tracker.yandex.net/v2/issues/${TASK_ID}/comments"
 

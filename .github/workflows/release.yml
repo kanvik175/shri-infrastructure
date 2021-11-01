@@ -31,6 +31,12 @@ jobs:
 
       - name: run tests
         run: sh ./scripts/run_tests.sh
+        env:
+          ORG_ID: ${{ secrets.ORG_ID }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
 
       - name: build image
         run: sh ./scripts/build_image.sh
+        env:
+          ORG_ID: ${{ secrets.ORG_ID }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
