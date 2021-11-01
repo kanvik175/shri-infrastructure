@@ -4,7 +4,10 @@ docker build . -t $BUILD_NAME
 
 if [ $? = 0 ]
 then
-  sh ./scripts/add_comment.sh "Собран образ ${BUILD_NAME}" $TASK_ID $ORG_ID $APP_TOKEN
+  MESSAGE="Собран образ ${BUILD_NAME}"
+  echo $MESSAGE
+  sh ./scripts/add_comment.sh $MESSAGE
 else
+  echo "Сборка образа завершилась с ошибкой"
   exit 1
 fi
