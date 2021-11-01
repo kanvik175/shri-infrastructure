@@ -19,7 +19,7 @@ DESCRIPTION="Версия релиза: ${TAG}\nВерсия пакета с р�
 
 JSON='{"queue": "'"${QUEUE_NAME}"'", "summary": "'"${SUMMARY}"'", "description": "'"${DESCRIPTION}"'", "unique": "'"${BUILD_NAME}"'"}'
 
-CREATE_RESPONSE=$(curl -X  POST \
+CREATE_RESPONSE=$(curl -X -s POST \
 -d "$JSON" \
 -H 'Content-Type: application-json' \
 -H 'X-Org-ID: '"$ORG_ID" \
