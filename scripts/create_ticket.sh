@@ -29,23 +29,20 @@ CREATE_RESPONSE=$(curl -X  POST \
 -H 'Authorization: OAuth '"$APP_TOKEN" \
 https://api.tracker.yandex.net/v2/issues/)
 
-echo "Установка пакета jq"
-sudo apt-get -y install jq
-
 TASK_ID=$(echo $CREATE_RESPONSE | jq '.key' | sed 's/"//g')
 ERROR_CODE=$(echo $CREATE_RESPONSE | jq '.statusCode')
 
-echo "TASK_ID=${TASK_ID}" >> $GITHUB_ENV
+# echo "TASK_ID=${TASK_ID}" >> $GITHUB_ENV
 
 echo $CREATE_RESPONSE
 echo $TASK_ID
 echo $ERROR_CODE
 
-if [ $TASK_ID == "" ]
+if [[ $TASK_ID = "" ]]
 then
   echo "Тикет создан"
 else
-  if [ $ERROR_CODE = "409" ]
+  if [[ $ERROR_CODE = "409" ]]
   then
     echo "Тикет уже существует"
 
@@ -55,6 +52,8 @@ else
     -H 'X-Org-ID: '"$ORG_ID" \
     -H 'Authorization: OAuth '"$APP_TOKEN" \
     https://api.tracker.yandex.net/v2/issues/_search)
+
+    echo $SEARCH_RESULT
 
     TASK_URL=$(echo $SEARCH_RESULT | jq '.[].self' | sed 's/"//g')
     echo "URL существующего тикета: ${TASK_URL}"
@@ -69,7 +68,7 @@ else
     -H 'Authorization: OAuth '"$APP_TOKEN" \
     $TASK_URL)
 
-    if [ $UPDATE_RESPONSE_CODE = "200" ]
+    if [[ $UPDATE_RESPONSE_CODE = "200" ]]
     then
       echo "Тикет успешно обновлен"
     else
