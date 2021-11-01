@@ -12,7 +12,7 @@ echo "PREV_TAG=${PREV_TAG}" >> $GITHUB_ENV
 echo "HASH=${HASH}" >> $GITHUB_ENV
 echo "BUILD_NAME=${BUILD_NAME}" >> $GITHUB_ENV
 
-SUMMARY="Релиз ${BUILD_NAME}"
+SUMMARY="Релиз ${TAG}"
 CHANGELOG=$(git log --pretty=format:"%h "%s" %an %ad\n" --date=short $PREV_TAG..$TAG | tr -s "\n" " ")
 
 DESCRIPTION="Версия релиза: ${TAG}\nВерсия пакета с релизом: ${BUILD_NAME}\n\n${CHANGELOG}"
