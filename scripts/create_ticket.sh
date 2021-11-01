@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+ORG_ID=6461097
+APP_TOKEN=AQAAAAAWmi6LAAd5C9bXNaNYeE_vshAJkUkTl1c
+
 QUEUE_NAME=TMP
 
 TAG=$(git tag --sort=-creatordate | head -1)
@@ -7,10 +10,10 @@ PREV_TAG=$(git tag --sort=-creatordate | sed -n 2p)
 HASH=$(git rev-parse HEAD | cut -c1-10)
 BUILD_NAME=$TAG-$HASH
 
-echo "TAG=${TAG}" >> $GITHUB_ENV
-echo "PREV_TAG=${PREV_TAG}" >> $GITHUB_ENV
-echo "HASH=${HASH}" >> $GITHUB_ENV
-echo "BUILD_NAME=${BUILD_NAME}" >> $GITHUB_ENV
+# echo "TAG=${TAG}" >> $GITHUB_ENV
+# echo "PREV_TAG=${PREV_TAG}" >> $GITHUB_ENV
+# echo "HASH=${HASH}" >> $GITHUB_ENV
+# echo "BUILD_NAME=${BUILD_NAME}" >> $GITHUB_ENV
 
 SUMMARY="Релиз ${TAG}"
 CHANGELOG=$(git log --pretty=format:"%h "%s" %an %ad\n" --date=short $PREV_TAG..$TAG | tr -s "\n" " ")
@@ -19,9 +22,7 @@ DESCRIPTION="Версия релиза: ${TAG}\nВерсия пакета с р�
 
 JSON='{"queue": "'"${QUEUE_NAME}"'", "summary": "'"${SUMMARY}"'", "description": "'"${DESCRIPTION}"'", "unique": "'"${BUILD_NAME}"'"}'
 
-
-CREATE_RESPONSE_CODE=$(curl -X  POST \
--o /dev/null -s -w "%{http_code}\n" \
+CREATE_RESPONSE=$(curl -X  POST \
 -d "$JSON" \
 -H 'Content-Type: application-json' \
 -H 'X-Org-ID: '"$ORG_ID" \
@@ -31,24 +32,29 @@ https://api.tracker.yandex.net/v2/issues/)
 echo "Установка пакета jq"
 sudo apt-get -y install jq
 
-SEARCH_RESULT=$(curl -s -X POST \
--d '{"filter": { "unique": "'"${BUILD_NAME}"'" } }' \
--H 'Content-Type: application-json' \
--H 'X-Org-ID: '"$ORG_ID" \
--H 'Authorization: OAuth '"$APP_TOKEN" \
-https://api.tracker.yandex.net/v2/issues/_search)
-
-TASK_ID=$(echo $SEARCH_RESULT | jq '.[].key' | sed 's/"//g')
+TASK_ID=$(echo $CREATE_RESPONSE | jq '.[].key' | sed 's/"//g')
+ERROR_CODE=$(echo $CREATE_RESPONSE | jq '.statusCode')
 
 echo "TASK_ID=${TASK_ID}" >> $GITHUB_ENV
 
-if [ $CREATE_RESPONSE_CODE = "201" ]
+echo $CREATE_RESPONSE
+echo $TASK_ID
+echo $ERROR_CODE
+
+if [ -e $TASK_ID ]
 then
   echo "Тикет создан"
 else
-  if [ $CREATE_RESPONSE_CODE = "409" ]
+  if [ $ERROR_CODE = "409" ]
   then
     echo "Тикет уже существует"
+
+    SEARCH_RESULT=$(curl -s -X POST \
+    -d '{"filter": { "unique": "'"${BUILD_NAME}"'" } }' \
+    -H 'Content-Type: application-json' \
+    -H 'X-Org-ID: '"$ORG_ID" \
+    -H 'Authorization: OAuth '"$APP_TOKEN" \
+    https://api.tracker.yandex.net/v2/issues/_search)
 
     TASK_URL=$(echo $SEARCH_RESULT | jq '.[].self' | sed 's/"//g')
     echo "URL существующего тикета: ${TASK_URL}"
