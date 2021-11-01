@@ -3,7 +3,7 @@ name: release
 on:
   push:
     tags:
-      - "*"
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   release:
@@ -12,6 +12,15 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: create ticket
+        run: |
+          chmod +x ./scripts/create_ticket.sh
+          sh ./scripts/create_ticket.sh
+        env:
+          ORG_ID: ${{ secrets.ORG_ID }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
+
       - uses: actions/setup-node@v2
         with:
           node-version: "14"
@@ -26,11 +35,3 @@ jobs:
         run: |
           chmod +x ./scripts/build_image.sh
           sh ./scripts/build_image.sh
-
-      - name: create ticket
-        run: |
-          chmod +x ./scripts/create_ticket.sh
-          sh ./scripts/create_ticket.sh
-        env:
-          ORG_ID: ${{ secrets.ORG_ID }}
-          APP_TOKEN: ${{ secrets.APP_TOKEN }}
