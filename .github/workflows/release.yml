@@ -13,7 +13,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: make scripts executable
+      - name: make scripts executable
         run: |
           chmod +x ./scripts/make_scripts_exec.sh
           sh ./scripts/make_scripts_exec.sh
