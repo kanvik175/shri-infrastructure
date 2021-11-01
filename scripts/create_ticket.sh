@@ -42,12 +42,17 @@ else
     echo "Установка пакета jq"
     sudo apt-get -y install jq
 
-    TASK_URL=$(curl -s -X POST \
+    SEARCH_RESULT=$(curl -s -X POST \
     -d '{"filter": { "unique": "'"${BUILD_NAME}"'" } }' \
     -H 'Content-Type: application-json' \
     -H 'X-Org-ID: '"$ORG_ID" \
     -H 'Authorization: OAuth '"$APP_TOKEN" \
-    https://api.tracker.yandex.net/v2/issues/_search | jq '.[].self' | sed 's/"//g')
+    https://api.tracker.yandex.net/v2/issues/_search)
+
+    TASK_URL=$(echo $SEARCH_RESULT | jq '.[].self' | sed 's/"//g')
+    TASK_ID=$(echo $SEARCH_RESULT | jq '.[].key' | sed 's/"//g')
+
+    echo "TASK_ID=${TASK_ID}" >> $GITHUB_ENV
 
     echo "URL существующего тикета: ${TASK_URL}"
 

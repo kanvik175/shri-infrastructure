@@ -2,10 +2,8 @@ name: release
 
 on:
   push:
-    branches:
-      - master
-    # tags:
-    # - "[0-9]+.[0-9]+.[0-9]+"
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   release:
@@ -15,10 +13,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: create ticket
+      - uses: make scripts executable
         run: |
-          chmod +x ./scripts/create_ticket.sh
-          sh ./scripts/create_ticket.sh
+          chmod +x ./scripts/make_scripts_exec.sh
+          sh ./scripts/make_scripts_exec.sh
+
+      - name: create ticket
+        run: sh ./scripts/create_ticket.sh
         env:
           ORG_ID: ${{ secrets.ORG_ID }}
           APP_TOKEN: ${{ secrets.APP_TOKEN }}
@@ -31,9 +32,7 @@ jobs:
         run: npm i
 
       - name: run tests
-        run: npm test -- --watchAll=false
+        run: sh ./scripts/run_tests.sh
 
       - name: build image
-        run: |
-          chmod +x ./scripts/build_image.sh
-          sh ./scripts/build_image.sh
+        run: sh ./scripts/build_image.sh
